@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/home/itachi/.dotnet/store/|arch|/|tfm|",
+      "/home/itachi/.nuget/packages"
+    ]
+  }
+}
