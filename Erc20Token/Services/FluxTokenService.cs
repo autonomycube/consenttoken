@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 using Nethereum.Web3.Accounts.Managed;
 
 namespace FluxToken.Services
@@ -38,8 +39,10 @@ namespace FluxToken.Services
         public FluxTokenService(IOptions<AppConfig> appConfig)
         {
             _appConfig = appConfig.Value;
-            var account = new ManagedAccount(_appConfig.KSSenderAddress, _appConfig.KSPassword);
-            var web3 = new Web3(account);
+            // var account = new ManagedAccount(_appConfig.KSSenderAddress, _appConfig.KSPassword);
+            // var web3 = new Web3(account);
+            var acc = new Account(_appConfig.KSPrivateKey);
+            var web3 = new Web3(acc, _appConfig.InfuraUrl);
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(_appConfig.ContractAddress);
         }

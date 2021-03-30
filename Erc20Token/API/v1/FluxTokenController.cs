@@ -40,15 +40,11 @@ namespace FluxToken.API.v1
         {
             var fluxTokenDeployment = new FluxTokenDeployment();
             // read file
-            var ksJson = System.IO.File.ReadAllText(_appConfig.KSFilename);
-            var account = new ManagedAccount(_appConfig.KSSenderAddress, _appConfig.KSPassword);
-            var web3 = new Web3Geth(account);
-            var isMining = await web3.Eth.Mining.IsMining.SendRequestAsync();
-            if (!isMining)
-            {
-                // throw new ApiException("not mining");
-                await web3.Miner.Start.SendRequestAsync(6);
-            }
+            // var ksJson = System.IO.File.ReadAllText(_appConfig.KSFilename);
+            // var account = new ManagedAccount(_appConfig.KSSenderAddress, _appConfig.KSPassword);
+            // var web3 = new Web3Geth(acc);
+            var acc = new Account(_appConfig.KSPrivateKey);
+            var web3 = new Web3(acc, "https://ropsten.infura.io/v3/4d86f0f263a847209212303805f5b104");
             var contractReceipt = await FluxTokenService.DeployContractAndWaitForReceiptAsync(web3, fluxTokenDeployment);
             return new ApiResponse(contractReceipt.ContractAddress);
         }
@@ -181,6 +177,18 @@ namespace FluxToken.API.v1
                 SubtractedValue = BigInteger.Parse(request.Value)
             });
             return new ApiResponse(response.TransactionHash);
+        }
+
+        /// <summary>
+        /// Infura testing actions
+        /// </summary>
+        [HttpGet("infura/balance/{address}")]
+        public async Task<ApiResponse> GetBalanceFromInfura([FromRoute] string address)
+        {
+            var web3 = new Web3Geth("https://ropsten.infura.io/v3/4d86f0f263a847209212303805f5b104");
+            var balance = await web3.Eth.GetBalance.SendRequestAsync(address);
+            var etherAmount = Web3.Convert.FromWei(balance);
+            return new ApiResponse(etherAmount);
         }
     }
 }
