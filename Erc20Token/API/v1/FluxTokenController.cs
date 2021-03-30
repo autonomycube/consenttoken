@@ -16,7 +16,7 @@ using Nethereum.Web3.Accounts.Managed;
 
 namespace FluxToken.API.v1
 {
-    [Route("api/v1/flux_token")]
+    [Route("api/v1/token")]
     [ApiController]
     public class FluxTokenController : ControllerBase
     {
